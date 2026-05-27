@@ -1,15 +1,16 @@
-FROM runpod/base:0.6.3-cuda11.8.0
+FROM runpod/pytorch:1.0.3-cu1281-torch280-ubuntu2204
 
-# Set python3.11 as the default python
-RUN ln -sf $(which python3.11) /usr/local/bin/python && \
-    ln -sf $(which python3.11) /usr/local/bin/python3
+ENV DEBIAN_FRONTEND=noninteractive     PYTHONUNBUFFERED=1     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True     HF_HOME=/runpod-volume/huggingface     HUGGINGFACE_HUB_CACHE=/runpod-volume/huggingface/hub     LTX_MODEL_ROOT=/runpod-volume/models/ltx-2.3
 
-# Install dependencies
+RUN apt-get update &&     apt-get install -y --no-install-recommends git ffmpeg curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt /requirements.txt
-RUN uv pip install --upgrade -r /requirements.txt --no-cache-dir --system
+RUN pip install --no-cache-dir --upgrade pip uv &&     pip install --no-cache-dir -r /requirements.txt
 
-# Add files
-ADD handler.py .
+RUN git clone --depth 1 https://github.com/Lightricks/LTX-2.git /opt/LTX-2 &&     cd /opt/LTX-2 &&     uv sync --frozen &&     . .venv/bin/activate &&     pip install --no-cache-dir -e packages/ltx-core -e packages/ltx-pipelines
 
-# Run the handler
-CMD python -u /handler.py
+WORKDIR /
+COPY handler.py /handler.py
+COPY src /src
+
+CMD ["python", "-u", "/handler.py"]

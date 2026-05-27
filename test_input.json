@@ -1,5 +1,17 @@
 {
   "input": {
-    "name": "John Doe"
+    "run_id": "local-smoke",
+    "output_prefix": "sweden-brief/test/local-smoke",
+    "width": 704,
+    "height": 1280,
+    "frames": 113,
+    "fps": 16,
+    "clips": [
+      {
+        "clip_id": "scene-01",
+        "image_url": "https://example.com/input.png",
+        "prompt": "A restrained documentary image gains subtle camera push-in and minimal natural movement. Preserve the original composition. No text."
+      }
+    ]
   }
 }
