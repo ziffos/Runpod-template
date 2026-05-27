@@ -18,8 +18,11 @@ DEFAULT_FPS = 16.0
 
 
 def handler(job: dict[str, Any]) -> dict[str, Any]:
-    settings = get_settings()
     job_input = job.get("input") or {}
+    if job_input.get("healthcheck"):
+        return {"ok": True, "worker": "sweden-brief-ltx"}
+
+    settings = get_settings()
     run_id = str(job_input.get("run_id", f"run-{int(time.time())}"))
     output_prefix = str(job_input.get("output_prefix", f"sweden-brief/runs/{run_id}")).strip("/")
     width = int(job_input.get("width", DEFAULT_WIDTH))
