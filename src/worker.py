@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import tempfile
 import time
 from pathlib import Path
@@ -20,7 +21,28 @@ DEFAULT_FPS = 16.0
 def handler(job: dict[str, Any]) -> dict[str, Any]:
     job_input = job.get("input") or {}
     if job_input.get("healthcheck"):
-        return {"ok": True, "worker": "sweden-brief-ltx"}
+        required_env = [
+            "HF_TOKEN",
+            "R2_ENDPOINT_URL",
+            "R2_ACCESS_KEY_ID",
+            "R2_SECRET_ACCESS_KEY",
+            "R2_BUCKET",
+            "HF_HOME",
+            "HUGGINGFACE_HUB_CACHE",
+            "LTX_MODEL_ROOT",
+            "LTX_CHECKPOINT_FILENAME",
+            "LTX_SPATIAL_UPSCALER_FILENAME",
+            "LTX_GEMMA_REPO",
+            "LTX_GEMMA_ROOT",
+            "LTX_QUANTIZATION",
+            "LTX_OFFLOAD",
+        ]
+        return {
+            "ok": True,
+            "worker": "sweden-brief-ltx",
+            "env": {key: bool(os.environ.get(key)) for key in required_env},
+            "runpod_volume_exists": Path("/runpod-volume").exists(),
+        }
 
     settings = get_settings()
     run_id = str(job_input.get("run_id", f"run-{int(time.time())}"))
