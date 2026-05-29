@@ -38,13 +38,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push RunPod image
         uses: docker/build-push-action@v6
         with:
           context: .
+          target: runpod
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Vast image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: vast
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:vast-latest
+            ${{ env.IMAGE_NAME }}:vast-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
