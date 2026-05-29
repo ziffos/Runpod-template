@@ -22,4 +22,4 @@ mkdir -p "$(dirname /tmp/ltx-model-server.log)" "$HF_HOME" "$LTX_MODEL_ROOT"
 touch /tmp/ltx-model-server.log
 
 python -m uvicorn src.model_server:app --host 127.0.0.1 --port 18000 >> /tmp/ltx-model-server.log 2>&1 &
-exec python -u /vast_worker.py
+exec python -u /vast_worker.py >> /tmp/ltx-model-server.log 2>&1

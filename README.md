@@ -79,13 +79,15 @@ Each job should contain two clips. Sweden Brief sends four async RunPod jobs for
 
 ## Vast Serverless Fallback
 
-The same image can also run as a Vast Serverless worker. GitHub Actions publishes the image to `ghcr.io/ziffos/runpod-template:latest`; use that image when creating the Vast Serverless template/workergroup.
+The same code can also run as a Vast Serverless worker. GitHub Actions publishes a Vast-specific image to `ghcr.io/ziffos/runpod-template:vast-latest`; use that image when creating the Vast Serverless template/workergroup.
 
-Recommended Vast launch command:
+Recommended Vast image:
 
-```bash
-/start_vast_serverless.sh
+```text
+ghcr.io/ziffos/runpod-template:vast-latest
 ```
+
+The Vast image defaults to `/start_vast_serverless.sh`, so no custom entrypoint args are required.
 
 Recommended Vast environment overrides:
 
