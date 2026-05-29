@@ -1,6 +1,6 @@
 FROM runpod/pytorch:1.0.3-cu1281-torch280-ubuntu2204
 
-ENV DEBIAN_FRONTEND=noninteractive     PYTHONUNBUFFERED=1     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True     HF_HOME=/runpod-volume/huggingface     HUGGINGFACE_HUB_CACHE=/runpod-volume/huggingface/hub     LTX_MODEL_ROOT=/runpod-volume/models/ltx-2.3
+ENV DEBIAN_FRONTEND=noninteractive     PYTHONUNBUFFERED=1     PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True     HF_HOME=/runpod-volume/huggingface     HUGGINGFACE_HUB_CACHE=/runpod-volume/huggingface/hub     LTX_MODEL_ROOT=/runpod-volume/models/ltx-2.3     HF_HUB_DISABLE_XET=1
 
 RUN apt-get update &&     apt-get install -y --no-install-recommends git ffmpeg curl ca-certificates &&     rm -rf /var/lib/apt/lists/*
 
@@ -11,6 +11,9 @@ RUN git clone --depth 1 https://github.com/Lightricks/LTX-2.git /opt/LTX-2 &&   
 
 WORKDIR /
 COPY handler.py /handler.py
+COPY vast_worker.py /vast_worker.py
+COPY start_vast_serverless.sh /start_vast_serverless.sh
 COPY src /src
+RUN chmod +x /start_vast_serverless.sh
 
 CMD ["python", "-u", "/handler.py"]

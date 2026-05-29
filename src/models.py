@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from huggingface_hub import hf_hub_download, snapshot_download
@@ -11,6 +12,7 @@ LTX_REPO = "Lightricks/LTX-2.3"
 
 
 def ensure_models(settings: Settings) -> dict[str, str]:
+    os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
     settings.model_root.mkdir(parents=True, exist_ok=True)
     checkpoint_path = settings.model_root / settings.checkpoint_filename
     upscaler_path = settings.model_root / settings.upscaler_filename

@@ -44,13 +44,13 @@ HUGGINGFACE_HUB_CACHE=/runpod-volume/huggingface/hub
 LTX_MODEL_ROOT=/runpod-volume/models/ltx-2.3
 LTX_CHECKPOINT_FILENAME=ltx-2.3-22b-distilled-1.1.safetensors
 LTX_SPATIAL_UPSCALER_FILENAME=ltx-2.3-spatial-upscaler-x2-1.1.safetensors
-LTX_GEMMA_REPO=google/gemma-3-12b-it
-LTX_GEMMA_ROOT=/runpod-volume/models/ltx-2.3/gemma-3-12b-it
+LTX_GEMMA_REPO=google/gemma-3-12b-it-qat-q4_0-unquantized
+LTX_GEMMA_ROOT=/runpod-volume/models/ltx-2.3/gemma-3-12b-it-qat-q4_0-unquantized
 LTX_QUANTIZATION=fp8-cast
 LTX_OFFLOAD=cpu
 ```
 
-You must accept any required Hugging Face licenses for `Lightricks/LTX-2.3` and `google/gemma-3-12b-it` on the Hugging Face account behind `HF_TOKEN`.
+You must accept any required Hugging Face licenses for `Lightricks/LTX-2.3` and `google/gemma-3-12b-it-qat-q4_0-unquantized` on the Hugging Face account behind `HF_TOKEN`.
 
 ## Job Input
 
@@ -75,3 +75,28 @@ Each job should contain two clips. Sweden Brief sends four async RunPod jobs for
   }
 }
 ```
+
+
+## Vast Serverless Fallback
+
+The same image can also run as a Vast Serverless worker. GitHub Actions publishes the image to `ghcr.io/ziffos/runpod-template:latest`; use that image when creating the Vast Serverless template/workergroup.
+
+Recommended Vast launch command:
+
+```bash
+/start_vast_serverless.sh
+```
+
+Recommended Vast environment overrides:
+
+```text
+HF_HOME=/workspace/.cache/huggingface
+HUGGINGFACE_HUB_CACHE=/workspace/.cache/huggingface/hub
+LTX_MODEL_ROOT=/workspace/models/ltx-2.3
+LTX_GEMMA_REPO=google/gemma-3-12b-it-qat-q4_0-unquantized
+LTX_GEMMA_ROOT=/workspace/models/ltx-2.3/gemma-3-12b-it-qat-q4_0-unquantized
+LTX_QUANTIZATION=fp8-cast
+LTX_OFFLOAD=cpu
+```
+
+Use a workergroup with `gpu_ram >= 40960`, `disk_space >= 100`, CUDA 12.6+, verified hosts, and a broad GPU set such as A100, L40S, L40, RTX 6000 Ada, A40, or RTX A6000.
